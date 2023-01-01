@@ -1,7 +1,10 @@
 # coding=utf-8
 
+import datetime
+import re
+
+import sys
 from docx import Document
-import re, sys, datetime
 
 
 def getText(wordname):
