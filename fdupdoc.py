@@ -11,14 +11,17 @@ def getText(wordname):
         texts.append(para.text)
     return texts
 
+
 def is_Chinese(word):
     for ch in word:
         if '\u4e00' <= ch <= '\u9fff':
             return True
     return False
 
-def msplit(s, seperators = ',|\.|\?|，|。|？|！'):
+
+def msplit(s, seperators=',|\.|\?|，|。|？|！'):
     return re.split(seperators, s)
+
 
 def readDocx(docfile):
     print('*' * 80)
@@ -38,7 +41,8 @@ def readDocx(docfile):
     showInfo(segs, docfile)
     return segs
 
-def showInfo(doc, filename = 'filename'):
+
+def showInfo(doc, filename='filename'):
     chars = 0
     segs = 0
     for p in doc:
@@ -49,7 +53,8 @@ def showInfo(doc, filename = 'filename'):
     print('短句数: {0:>8d} 句。'.format(segs))
     print('字符数: {0:>8d} 个。'.format(chars))
 
-def compareParagraph(doc1, i, doc2, j, min_segment = 5):
+
+def compareParagraph(doc1, i, doc2, j, min_segment=5):
     """
     功能为比较两个段落的相似度，返回结果为两个段落中相同字符的长度与较短段落长度的比值。
     :param p1: 行
@@ -77,7 +82,7 @@ def compareParagraph(doc1, i, doc2, j, min_segment = 5):
 
     # 取两个字符串的最短的一个进行比值计算
     count = sum([len(s) for s in list])
-    ratio = float(count) /  min(len1, len2)
+    ratio = float(count) / min(len1, len2)
     if count > 10 and ratio > 0.1:
         print(' 发现相同内容 '.center(80, '*'))
         print('文件1第{0:0>4d}段内容：{1}'.format(i + 1, p1))
@@ -86,9 +91,9 @@ def compareParagraph(doc1, i, doc2, j, min_segment = 5):
         print('相同字符比：{1:.2f}%\n相同字符数： {0}\n'.format(count, ratio * 100))
     return list
 
+
 if len(sys.argv) < 3:
     print("参数小于2.")
-
 
 doc1 = readDocx(sys.argv[1])
 doc2 = readDocx(sys.argv[2])
