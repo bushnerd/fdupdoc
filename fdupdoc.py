@@ -5,10 +5,29 @@ __author__ = 'scutxd'
 
 import datetime
 import logging
+import os
 import re
-
 import sys
+
 from docx import Document
+
+formatter = logging.Formatter(
+    '%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(funcName)s - %(message)s'
+)
+LOG_FILE_PATH = os.path.dirname(__file__) + '/log/'
+LOG_FILE_NAME = 'log.log'
+LOG_FILE = LOG_FILE_PATH + LOG_FILE_NAME
+
+console_handler = logging.StreamHandler()  # 输出到控制台的handler
+console_handler.setFormatter(formatter)
+console_handler.setLevel(logging.DEBUG)  # 设置控制台日志级别为ERROR
+
+file_handler = logging.FileHandler(LOG_FILE)  # 输出到文件的handler
+file_handler.setFormatter(formatter)
+file_handler.setLevel(logging.DEBUG)  # 设置文件日志级别为DEBUG
+
+logging.basicConfig(level=logging.DEBUG,
+                    handlers=[console_handler, file_handler])
 
 logger = logging.getLogger("log.{module_name}".format(module_name=__name__))
 
@@ -108,6 +127,7 @@ doc1 = readDocx(sys.argv[1])
 doc2 = readDocx(sys.argv[2])
 
 print('开始比对...'.center(80, '*'))
+
 t1 = datetime.datetime.now()
 for i in range(len(doc1)):
     if i % 100 == 0:
