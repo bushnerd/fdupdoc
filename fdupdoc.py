@@ -1,5 +1,4 @@
 # -*- coding: UTF-8 -*-
-
 ' fdupdoc module for finding duplicate doc'
 
 __author__ = 'scutxd'
@@ -81,10 +80,10 @@ def compareParagraph(doc1, i, doc2, j, min_segment=5):
     list = []
     for s1 in p1:
         if len(s1) < min_segment:
-            continue;
+            continue
         for s2 in p2:
             if len(s2) < min_segment:
-                continue;
+                continue
             if s2 in s1:
                 list.append(s2)
             elif s1 in s2:
