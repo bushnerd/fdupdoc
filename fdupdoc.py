@@ -1,10 +1,17 @@
-# coding=utf-8
+# -*- coding: UTF-8 -*-
+
+' fdupdoc module for finding duplicate doc'
+
+__author__ = 'scutxd'
 
 import datetime
+import logging
 import re
 
 import sys
 from docx import Document
+
+logger = logging.getLogger("log.{module_name}".format(module_name=__name__))
 
 
 def getText(wordname):
