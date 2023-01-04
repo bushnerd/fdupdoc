@@ -11,8 +11,9 @@ import sys
 
 from docx import Document
 
-formatter = logging.Formatter(
-    '%(asctime)s-%(levelname)s-%(filename)s:%(lineno)d-%(message)s')
+formatter = logging.Formatter('%(filename)s:%(lineno)d-%(message)s')
+# formatter = logging.Formatter(
+#     '%(asctime)s-%(levelname)s-%(filename)s:%(lineno)d-%(message)s')
 LOG_FILE_PATH = os.path.dirname(__file__) + '/log/'
 LOG_FILE_NAME = 'log.log'
 LOG_FILE = LOG_FILE_PATH + LOG_FILE_NAME
