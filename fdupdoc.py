@@ -37,6 +37,11 @@ def getText(wordname):
     texts = []
     for para in d.paragraphs:
         texts.append(para.text)
+    for table in d.tables:
+        for index in range(len(table.columns)):
+            for row_cell in table.row_cells(index):
+                if row_cell.text is not '':
+                    texts.append(row_cell.text)
     return texts
 
 
@@ -93,7 +98,9 @@ def compareParagraph(doc1, i, doc2, j, min_segment=5):
     p2 = doc2[j]
     len1 = sum([len(s) for s in p1])
     len2 = sum([len(s) for s in p2])
-    if len1 < 10 or len2 < 10:
+    # 此处关于长度的判断可能有问题，应该改为min_segment
+    # if len1 < 10 or len2 < 10:
+    if len1 < min_segment or len2 < min_segment:
         return []
 
     list = []
