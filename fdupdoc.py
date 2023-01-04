@@ -11,12 +11,19 @@ import sys
 
 from docx import Document
 
+# 如果打包为.exe文件，需要使用另外的方式来获取当前路径
+# determine if application is a script file or frozen exe
+EXE_FILE_PATH = ''
+if getattr(sys, 'frozen', False):
+    EXE_FILE_PATH = os.path.dirname(sys.executable)
+elif __file__:
+    EXE_FILE_PATH = os.path.dirname(__file__)
+
 formatter = logging.Formatter('%(filename)s:%(lineno)d-%(message)s')
 # formatter = logging.Formatter(
 #     '%(asctime)s-%(levelname)s-%(filename)s:%(lineno)d-%(message)s')
-LOG_FILE_PATH = os.path.dirname(__file__)
 LOG_FILE_NAME = 'result.log'
-LOG_FILE = LOG_FILE_PATH + '/' + LOG_FILE_NAME
+LOG_FILE = EXE_FILE_PATH + '/' + LOG_FILE_NAME
 
 console_handler = logging.StreamHandler()  # 输出到控制台的handler
 console_handler.setFormatter(formatter)
@@ -141,8 +148,9 @@ def check_doc(checking_doc, to_check_doc):
 
 
 if (__name__ == '__main__'):
+
     file_name_list = []
-    for file_name in os.listdir(os.path.dirname(__file__)):
+    for file_name in os.listdir(EXE_FILE_PATH):
         if file_name.endswith('.docx') and not os.path.isdir(file_name):
             file_name_list.append(file_name)
     logger.debug("file_name_list:{}".format(file_name_list))
@@ -156,6 +164,7 @@ if (__name__ == '__main__'):
     to_check_doc_dict = doc_dict.copy()
 
     for checking_doc_name, checking_doc_text in doc_dict.items():
+        # 每次从待比对的文档列表去掉当前正在比对的主文档
         to_check_doc_dict.pop(checking_doc_name)
         for to_check_doc_name, to_check_doc_text in to_check_doc_dict.items():
             logger.info('\n\n{}<----------------->{}'.format(
