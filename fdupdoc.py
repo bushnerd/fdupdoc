@@ -14,9 +14,9 @@ from docx import Document
 formatter = logging.Formatter('%(filename)s:%(lineno)d-%(message)s')
 # formatter = logging.Formatter(
 #     '%(asctime)s-%(levelname)s-%(filename)s:%(lineno)d-%(message)s')
-LOG_FILE_PATH = os.path.dirname(__file__) + '/log/'
-LOG_FILE_NAME = 'log.log'
-LOG_FILE = LOG_FILE_PATH + LOG_FILE_NAME
+LOG_FILE_PATH = os.path.dirname(__file__)
+LOG_FILE_NAME = 'result.log'
+LOG_FILE = LOG_FILE_PATH + '/' + LOG_FILE_NAME
 
 console_handler = logging.StreamHandler()  # 输出到控制台的handler
 console_handler.setFormatter(formatter)
@@ -40,7 +40,7 @@ def getText(wordname):
     for table in d.tables:
         for index in range(len(table.columns)):
             for row_cell in table.row_cells(index):
-                if row_cell.text is not '':
+                if row_cell.text != '':
                     texts.append(row_cell.text)
     return texts
 
@@ -127,20 +127,38 @@ def compareParagraph(doc1, i, doc2, j, min_segment=5):
     return list
 
 
-if len(sys.argv) < 3:
-    logger.error("参数小于2.")
+def check_doc(checking_doc, to_check_doc):
+    t1 = datetime.datetime.now()
+    for i in range(len(checking_doc)):
+        if i % 100 == 0:
+            logger.info('处理进行中，已处理段落 {0:>4d} (总数 {1:0>4d} ） '.format(
+                i, len(checking_doc)))
+        for j in range(len(to_check_doc)):
+            compareParagraph(checking_doc, i, to_check_doc, j)
 
-doc1 = readDocx(sys.argv[1])
-doc2 = readDocx(sys.argv[2])
+    t2 = datetime.datetime.now()
+    logger.info('比对完成，总用时: {}'.format(t2 - t1))
 
-logger.info('开始比对...'.center(80, '*'))
 
-t1 = datetime.datetime.now()
-for i in range(len(doc1)):
-    if i % 100 == 0:
-        logger.info('处理进行中，已处理段落 {0:>4d} (总数 {1:0>4d} ） '.format(i, len(doc1)))
-    for j in range(len(doc2)):
-        compareParagraph(doc1, i, doc2, j)
+if (__name__ == '__main__'):
+    file_name_list = []
+    for file_name in os.listdir(os.path.dirname(__file__)):
+        if file_name.endswith('.docx') and not os.path.isdir(file_name):
+            file_name_list.append(file_name)
+    logger.debug("file_name_list:{}".format(file_name_list))
 
-t2 = datetime.datetime.now()
-logger.info('比对完成，总用时: {}'.format(t2 - t1))
+    doc_dict = {}
+    for file_name in file_name_list:
+        doc_dict[file_name] = readDocx(file_name)
+
+    # checking_doc 当前正在比对的主文档
+    # to_check_doc_dict 当前正在比对的副文档
+    to_check_doc_dict = doc_dict.copy()
+
+    for checking_doc_name, checking_doc_text in doc_dict.items():
+        to_check_doc_dict.pop(checking_doc_name)
+        for to_check_doc_name, to_check_doc_text in to_check_doc_dict.items():
+            logger.info('\n\n{}<----------------->{}'.format(
+                checking_doc_name, to_check_doc_name))
+            check_doc(checking_doc_text, to_check_doc_text)
+    pass
