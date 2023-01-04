@@ -8,6 +8,8 @@ import logging
 import os
 import re
 import sys
+import win32api
+import win32con
 
 from docx import Document
 
@@ -147,11 +149,18 @@ def check_doc(checking_doc, to_check_doc):
     logger.info('比对完成，总用时: {}'.format(t2 - t1))
 
 
-if (__name__ == '__main__'):
+def is_hidden_file(p):
+    if os.name == 'nt':
+        attribute = win32api.GetFileAttributes(p)
+        return attribute & (win32con.FILE_ATTRIBUTE_HIDDEN
+                            | win32con.FILE_ATTRIBUTE_SYSTEM)
 
+
+if (__name__ == '__main__'):
     file_name_list = []
     for file_name in os.listdir(EXE_FILE_PATH):
-        if file_name.endswith('.docx') and not os.path.isdir(file_name):
+        if file_name.endswith('.docx') and not os.path.isdir(
+                file_name) and not is_hidden_file(file_name):
             file_name_list.append(file_name)
     logger.debug("file_name_list:{}".format(file_name_list))
 
