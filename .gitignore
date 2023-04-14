@@ -5,3 +5,4 @@ build/fdupdoc
 dist
 result.log
 *.docx
+misc/
