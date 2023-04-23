@@ -1,3 +1,4 @@
+[简体中文](https://github.com/bushnerd/fdupdoc/blob/master/README_cn.md)
 # 1. Usage
 1. Put the docx files that need to be checked for duplication in the same folder.
 2. Run fdupdoc.exe
